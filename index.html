@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Capynote</title>
+<meta name="description" content="Capynote — suas notas, cadernos e tarefas, com a calma de uma capivara.">
+<meta name="theme-color" content="#17905a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Capynote">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar"></aside>
+  <section id="listpane">
+    <div id="lphead"></div>
+    <div class="qwrap"><svg class="ic" viewBox="0 0 24 24"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4"/></svg><input id="q" type="search" placeholder="Pesquisar notas…  (tag:  caderno:  intitle:  todo:)" autocomplete="off"></div>
+    <div id="list"></div>
+  </section>
+  <main id="main"></main>
+</div>
+<div id="scrim" data-act="closeSide"></div>
+<nav id="bottomnav"></nav>
+<div id="toast"></div>
+<input type="file" id="filepick" hidden>
+<script src="store.js"></script>
+<script src="editor.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
