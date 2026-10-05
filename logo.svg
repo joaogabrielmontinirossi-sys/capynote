@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#40bf7c"/>
+      <stop offset="1" stop-color="#0d6641"/>
+    </linearGradient>
+    <linearGradient id="fur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d39d62"/>
+      <stop offset="1" stop-color="#a06838"/>
+    </linearGradient>
+    <radialGradient id="fruit" cx=".35" cy=".3" r=".8">
+      <stop offset="0" stop-color="#ffc05a"/>
+      <stop offset="1" stop-color="#f58a1f"/>
+    </radialGradient>
+    <clipPath id="r"><rect width="512" height="512" rx="116"/></clipPath>
+  </defs>
+  <g clip-path="url(#r)">
+    <rect width="512" height="512" fill="url(#bg)"/>
+    <circle cx="262" cy="286" r="204" fill="#fff" opacity=".1"/>
+    <ellipse cx="262" cy="446" rx="176" ry="13" fill="#083d27" opacity=".3"/>
+    <!-- patas de trás (lado oposto) -->
+    <rect x="150" y="372" width="42" height="72" rx="19" fill="#7c4f28"/>
+    <rect x="304" y="372" width="38" height="72" rx="18" fill="#7c4f28"/>
+    <!-- orelha -->
+    <ellipse cx="306" cy="172" rx="21" ry="24" transform="rotate(-18 306 172)" fill="#8a582d"/>
+    <ellipse cx="308" cy="175" rx="10" ry="13" transform="rotate(-18 308 175)" fill="#5e3a1c"/>
+    <!-- corpo em barril + cabeça retangular, quase sem pescoço -->
+    <path d="M62 328C62 276 84 240 130 226C180 211 236 214 274 206C284 186 304 170 334 170L404 170C438 170 460 190 462 224L464 262C465 290 448 306 420 308L356 314C344 330 340 352 334 374C328 398 308 410 282 410L132 410C90 410 62 378 62 328Z" fill="url(#fur)"/>
+    <!-- focinho -->
+    <path d="M404 170C438 170 460 190 462 224L464 262C465 290 448 306 420 308L392 310C404 286 408 258 406 228C405 206 404 186 404 170Z" fill="#7f5129" opacity=".5"/>
+    <ellipse cx="447" cy="204" rx="6" ry="9" transform="rotate(16 447 204)" fill="#3b2412"/>
+    <path d="M456 279C445 287 431 286 420 276" fill="none" stroke="#3b2412" stroke-width="7" stroke-linecap="round"/>
+    <!-- olho -->
+    <circle cx="366" cy="210" r="12" fill="#2a190c"/>
+    <circle cx="370" cy="206" r="4" fill="#fff"/>
+    <!-- patas da frente -->
+    <rect x="104" y="368" width="48" height="78" rx="21" fill="#a06838"/>
+    <rect x="262" y="368" width="42" height="78" rx="19" fill="#a06838"/>
+    <!-- laranja na cabeça -->
+    <circle cx="372" cy="136" r="35" fill="url(#fruit)"/>
+    <path d="M374 102C384 76 412 72 426 84C416 106 394 111 374 102Z" fill="#d6f58a"/>
+    <path d="M374 102C390 95 406 90 420 86" fill="none" stroke="#7fb53a" stroke-width="4" stroke-linecap="round"/>
+  </g>
+</svg>
