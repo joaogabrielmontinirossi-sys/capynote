@@ -753,5 +753,5 @@ const App = (() => {
   }
   init();
 
-  return { openNote, go };
+  return { openNote, go, render };
 })();
