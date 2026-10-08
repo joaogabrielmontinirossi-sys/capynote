@@ -1,6 +1,6 @@
 /* Capynote — service worker: rede primeiro, cache como reserva para uso offline */
-const CACHE = 'capynote-v1';
-const FILES = ['./', 'index.html', 'app.css', 'store.js', 'editor.js', 'app.js', 'logo.svg', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
+const CACHE = 'capynote-v1-g1';
+const FILES = ['./', 'index.html', 'gsync.js', 'app.css', 'store.js', 'editor.js', 'app.js', 'logo.svg', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));

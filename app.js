@@ -1,4 +1,5 @@
 'use strict';
+const GSync = window.GSyncLib || { web: false, on: () => false, io: null, html: () => '', off() {}, onChange: null };
 /* Capynote — telas, navegação e ações */
 
 const App = (() => {
@@ -410,12 +411,12 @@ const App = (() => {
     drop('tags', t => S.notes.some(n => n.tags.includes(t.id)));
   }
   async function syncNow(manual) {
-    if (!Sync.on) return;
+    if (!Sync.on && !GSync.on()) return;
     if (Sync.busy) { Sync.again = true; return; }
     Sync.busy = true;
     try {
       commit();
-      const r = await api('sync');
+      const r = await (Sync.on ? api('sync') : GSync.io());
       if (!r.ok) throw new Error('não foi possível ler a pasta');
       const text = r.status === 200 ? await r.text() : '', remote = text.trim() ? JSON.parse(text) : null;
       let pulled = 0;
@@ -429,7 +430,7 @@ const App = (() => {
       }
       const local = { app: 'capynote', version: 1, exported: Date.now(), notes: S.notes, notebooks: S.notebooks, tags: S.tags, tasks: S.tasks, tombstones: DB.tomb() };
       if (!remote || syncSig(remote) !== syncSig(local)) {
-        const w = await api('sync', { method: 'POST', body: JSON.stringify(local) });
+        const w = await (Sync.on ? api('sync', { method: 'POST', body: JSON.stringify(local) }) : GSync.io({ method: 'POST', body: JSON.stringify(local) }));
         if (!w.ok) throw new Error('não foi possível gravar na pasta');
       }
       if (!S.set.syncedOnce) { S.set.syncedOnce = true; Store.saveSet(); }
@@ -526,7 +527,7 @@ const App = (() => {
       <div style="display:flex;flex-wrap:wrap;gap:8px">${Sync.on ? `<button class="btn ghost sm" data-k="syncnow">Sincronizar agora</button><button class="btn ghost sm" data-k="syncoff">Desativar</button>` : Sync.detected ? `<button class="btn sm" data-k="syncauto">Ativar no Google Drive</button>` : ''}${(Sync.drives || []).filter(d => d !== Sync.folder && (Sync.on || d !== Sync.detected)).map(d => `<button class="btn ghost sm" data-k="syncuse" data-path="${esc(d)}">Usar ${esc(d)}</button>`).join('')}<button class="btn ghost sm" data-k="syncpick">Escolher outra pasta…</button></div>
       ${(Sync.drives || []).length > 1 ? '<p class="muted" style="margin:6px 0 0">Há mais de uma conta do Google Drive neste computador: cada unidade (G:, H:…) é uma conta.</p>' : ''}
       <p class="muted" style="margin:6px 0 0">O Capynote grava o arquivo capynote-sync.json nessa pasta a cada alteração e o Google Drive o envia para a sua conta. Outro computador com o Capynote e o mesmo Drive recebe as notas automaticamente.</p>` : ''}
-      <label>Backup e migração</label>
+      ${!Sync.avail && GSync.web ? GSync.html() : ''}<label>Backup e migração</label>
       <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn ghost sm" data-k="backup">${ic('dl')} Exportar backup (.json)</button><button class="btn ghost sm" data-k="enex">${ic('dl')} Exportar tudo (.enex)</button><button class="btn ghost sm" data-k="import">${ic('up')} Importar…</button></div>
       <p class="muted" style="margin:6px 0 0">Importa backups do Capynote, arquivos .enex do Evernote, HTML, Markdown e texto. Para levar suas notas a outro aparelho, exporte o backup aqui e importe lá.</p>
       <label>Aplicativo</label>
@@ -548,7 +549,7 @@ const App = (() => {
       if (k === 'syncuse') { await syncConfig('sync/config', e.target.closest('[data-k]').dataset.path); m.close(); settingsModal(); }
       if (k === 'syncpick') { toast('Escolha a pasta na janela que abriu'); await syncConfig('sync/choose', ''); m.close(); settingsModal(); }
       if (k === 'wipe' && await confirmBox('Apagar tudo', 'Todas as notas, cadernos, etiquetas e tarefas deste dispositivo serão apagados. Isso não pode ser desfeito.' + (Sync.on ? ' A sincronização será desativada e a cópia no Google Drive continua lá.' : ''), 'Apagar tudo', true)) {
-        if (Sync.on) await api('sync/config', { method: 'POST', body: 'off' });
+        if (Sync.on) await api('sync/config', { method: 'POST', body: 'off' }); GSync.off();
         for (const s of DB.STORES) await DB.clear(s);
         location.reload();
       }
@@ -740,9 +741,10 @@ const App = (() => {
     checkReminders();
     setInterval(checkReminders, 30000);
     if (/^https?:$/.test(location.protocol)) await syncInfo();
-    if (Sync.avail) {
+    if (Sync.avail || GSync.web) {
+      GSync.onChange = () => syncNow(true);
       const first = Sync.on && !S.set.syncedOnce;
-      DB.onChange = () => { if (Sync.on) syncSoon(); };
+      DB.onChange = () => { if (Sync.on || GSync.on()) syncSoon(); };
       await syncNow();
       if (first && !Sync.error) toast('Sincronizando com o Google Drive: ' + Sync.folder);
       setInterval(() => syncNow(), 60000);
